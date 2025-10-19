@@ -1,0 +1,103 @@
+{% extends "app_producto/base.html" %}
+
+{% block body %}
+<h3 class="m-4">Todos los productos</h3>
+
+{% if productos %}
+<div class="card text-white bg-secondary ms-4 me-4 mb-4">
+    <div class="card-header">
+        <i class="fa-solid fa-list-ul fa-lg"></i> Registros de productos
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th style="color:black;">Nombre</th>
+                        <th style="color:black;">Descripción</th>
+                        <th style="color:black;">Precio</th>
+                        <th style="color:black;">Stock</th>
+                        <th style="color:black;">Categoría</th>
+                        <th style="color:black;">ID Ingrediente</th>
+                        <th style="color:black;">Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for producto in productos %}
+                    <tr class="table-info">
+                        <td>{{ producto.nombre }}</td>
+                        <td>{{ producto.descripcion }}</td>
+                        <td>{{ producto.precio }}</td>
+                        <td>{{ producto.stock }}</td>
+                        <td>{{ producto.categoria }}</td>
+                        <td>{{ producto.id_ingrediente }}</td>
+                        <td>
+                            <!-- Botón Ver (modal) -->
+                            <button class="btn btn-success btn-sm mb-1" data-bs-toggle="modal" data-bs-target="#myModal{{ producto.id }}">
+                                <i class="fa-solid fa-circle-info"></i> Ver
+                            </button>
+
+                            <!-- Botón Editar -->
+                            <a href="{% url 'edit' producto.id %}" class="btn btn-warning btn-sm mb-1">
+                                <i class="fa-solid fa-pen-to-square"></i> Editar
+                            </a>
+
+                            <!-- Modal -->
+                            <div class="modal fade" id="myModal{{ producto.id }}" tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Producto: {{ producto.nombre }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <ul class="list-unstyled">
+                                                <li>Descripción: <strong>{{ producto.descripcion }}</strong></li>
+                                                <li>Precio: <strong>{{ producto.precio }}</strong></li>
+                                                <li>Stock: <strong>{{ producto.stock }}</strong></li>
+                                                <li>Categoría: <strong>{{ producto.categoria }}</strong></li>
+                                                <li>ID Ingrediente: <strong>{{ producto.id_ingrediente }}</strong></li>
+                                            </ul>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#delete{{ producto.id }}">
+                                <i class="fa-solid fa-trash fa-lg"></i>
+                            </button>
+                            <!-- Modal Eliminar -->
+                             <div class="modal fade" id=delete{{ producto.id }} tabindex="-1">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Producto: {{ producto.nombre }}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                          <p>¿Estás seguro de que deseas eliminar este producto?</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                          <form action="{% url 'delete' producto.id %}" method="POST">
+                                            {% csrf_token %}
+                                            <input type="submit" class="btn btn-primary" value="Eliminar">
+                                          </form>
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% else %}
+<h5 class="alert alert-primary ms-4 me-4">No hay productos registrados</h5>
+{% endif %}
+{% endblock %}
